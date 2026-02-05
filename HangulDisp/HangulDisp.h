@@ -254,6 +254,7 @@ private:
     const uint8_t* choData;
     const uint8_t* jungData;
     const uint8_t* jongData;
+    bool hasAscii;
     bool fontReady;
 
 public:
@@ -268,6 +269,7 @@ public:
                     choData(nullptr),
                     jungData(nullptr),
                     jongData(nullptr),
+                    hasAscii(false),
                     fontReady(false) {}
 
     // 설정 메서드
@@ -297,7 +299,9 @@ public:
         choData = font.choData;
         jungData = font.jungData;
         jongData = font.jongData;
-        fontReady = (choData && jungData && jongData);
+        hasAscii = font.hasAscii;
+        // 한글 폰트는 3개 포인터 모두 필요, ASCII 폰트는 choData만 필요
+        fontReady = hasAscii ? (choData != nullptr) : (choData && jungData && jongData);
     }
 
     // UTF-8 문자열 출력
@@ -314,8 +318,12 @@ public:
                     break;
                 }
             } else if ((*p & 0x80) == 0) {
-                // TODO: ASCII 폰트 지원 추가
-                cursorX += 8;
+                // ASCII 문자 (1바이트)
+                if (hasAscii && choData) {
+                    printAsciiChar((uint8_t)*p);
+                } else {
+                    cursorX += 8;  // ASCII 폰트 없으면 공백만
+                }
                 p++;
             } else if ((*p & 0xE0) == 0xC0) {
                 p += 2;
@@ -348,6 +356,17 @@ public:
         HangulGlyphSet glyphs = getGlyphSet(comp);
         drawCombinedGlyph(cursorX, cursorY, glyphs);
         advanceCursor();
+    }
+
+    // 단일 ASCII 문자 출력
+    void printAsciiChar(uint8_t ascii) {
+        if (!hasAscii || !choData || ascii >= 128) {
+            return;
+        }
+        // ASCII 폰트는 choData에 순차적으로 저장됨 (0-127)
+        const uint8_t* glyphData = choData + (ascii * HANGUL_BYTES_PER_GLYPH);
+        drawAsciiGlyph(cursorX, cursorY, glyphData);
+        cursorX += HANGUL_GLYPH_WIDTH;  // ASCII도 16x16 사이즈
     }
 
 private:
@@ -391,6 +410,28 @@ private:
                 if (glyphs.jong) {
                     pixel |= getPixelFromGlyph(glyphs.jong, row, col);
                 }
+                
+                if (pixel) {
+                    uint16_t color = resolveColor();
+                    for (uint8_t sy = 0; sy < scaleY; sy++) {
+                        for (uint8_t sx = 0; sx < scaleX; sx++) {
+                            drawPixelCallback(x + col * scaleX + sx,
+                                            y + row * scaleY + sy,
+                                            color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void drawAsciiGlyph(int16_t x, int16_t y, const uint8_t* glyph) {
+        uint8_t scaleX = (textSize == HG_SIZE_H2 || textSize == HG_SIZE_X4) ? 2 : 1;
+        uint8_t scaleY = (textSize == HG_SIZE_V2 || textSize == HG_SIZE_X4) ? 2 : 1;
+        
+        for (int16_t row = 0; row < HANGUL_GLYPH_HEIGHT; row++) {
+            for (int16_t col = 0; col < HANGUL_GLYPH_WIDTH; col++) {
+                bool pixel = getPixelFromGlyph(glyph, row, col);
                 
                 if (pixel) {
                     uint16_t color = resolveColor();

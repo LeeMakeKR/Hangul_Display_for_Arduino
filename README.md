@@ -28,13 +28,8 @@ U8g2, TFT_eSPI, GxEPD2, Adafruit GFX 등 아두이노의 다양한 디스플레�
 - UTF-8 → 초중종성 분해, 벌 선택
 - 폰트 데이터는 별도 헤더로 분리 (Font_name.h 등)
 
-### 3. **setFont 기반 설계**
-```cpp
-hangulDisp hangul(drawPixel);
-hangul.setFont(Font_name);
-```
 
-### 4. **메모리 효율**
+### 3. **메모리 효율**
 - 사용하는 폰트만 링크 (링크 타임 최적화)
 - PROGMEM으로 플래시 메모리 활용
 - 필요한 글리프만 조합하여 렌더링

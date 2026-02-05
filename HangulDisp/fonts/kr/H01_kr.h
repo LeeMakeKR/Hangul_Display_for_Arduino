@@ -2,7 +2,7 @@
  * H01_kr - Korean Hangul Font for Arduino/ESP32
  * 
  * Converted from EasyView font file: H01_kr.han
- * Generated: 2025-11-12 17:11:01
+ * Generated: 2026-02-06 08:36:50
  * 
  * Font Structure:
  * - Glyph Size: 16x16 pixels
@@ -19,7 +19,6 @@
 #ifndef H01_KR_H
 #define H01_KR_H
 
-#include <Arduino.h>
 #include "hangulDisp.h"
 
 // Font bitmap data (MSB first, 16x16 pixels, 32 bytes per glyph)
@@ -986,15 +985,15 @@ const uint8_t H01_kr_Bitmaps[] PROGMEM = {
   0x01, 0x80, 0x1F, 0xF8, 0x1F, 0xF8, 0x06, 0x60, 0x07, 0xE0, 0x03, 0xC0
 };
 
-// Font instance (using HangulFontInfo from hangulDisp.h)
+// Font info instance
 const HangulFontInfo H01_kr = {
   "H01",                                                                    // name
-  16,                                                                        // width
-  16,                                                                        // height
-  false,                                                                     // hasAscii
-  H01_kr_Bitmaps + (HANGUL_CHO_OFFSET * HANGUL_BYTES_PER_GLYPH),           // choData
-  H01_kr_Bitmaps + (HANGUL_JUNG_OFFSET * HANGUL_BYTES_PER_GLYPH),          // jungData
-  H01_kr_Bitmaps + (HANGUL_JONG_OFFSET * HANGUL_BYTES_PER_GLYPH)           // jongData
+  16,                                                                       // width
+  16,                                                                       // height
+  false,                                                                    // hasAscii
+  H01_kr_Bitmaps + (HANGUL_CHO_OFFSET * HANGUL_BYTES_PER_GLYPH),            // choData
+  H01_kr_Bitmaps + (HANGUL_JUNG_OFFSET * HANGUL_BYTES_PER_GLYPH),           // jungData
+  H01_kr_Bitmaps + (HANGUL_JONG_OFFSET * HANGUL_BYTES_PER_GLYPH)             // jongData
 };
 
 #endif // H01_KR_H
