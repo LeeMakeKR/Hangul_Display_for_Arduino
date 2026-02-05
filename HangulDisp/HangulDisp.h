@@ -126,27 +126,30 @@ struct HangulGlyphSet {
 namespace HangulCore {
 
     // 초성 벌 선택 Lookup 테이블 (받침 없을 때)
+    // 원본: { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 1, 2, 4, 4, 4, 2, 1, 3, 0 } (인덱스 1~21 사용)
     static const uint8_t CHO_BUL_NO_JONG[] = {
-        0, 0, 0, 0, 0, 0, 0, 0,  // ㅏㅐㅑㅒㅓㅔㅕㅖ
-        0, 1, 3, 3, 3,           // ㅗㅘㅙㅚㅛ
-        1, 2, 4, 4, 4,           // ㅜㅝㅞㅟㅠ
-        2, 1, 3                  // ㅡㅢㅣ
+        0, 0, 0, 0, 0, 0, 0, 0,  // ㅏㅐㅑㅒㅓㅔㅕㅖ (인덱스 0~7)
+        1, 3, 3, 3, 1,           // ㅗㅘㅙㅚㅛ (인덱스 8~12)
+        2, 4, 4, 4, 2,           // ㅜㅝㅞㅟㅠ (인덱스 13~17)
+        1, 3, 0                  // ㅡㅢㅣ (인덱스 18~20)
     };
     
     // 초성 벌 선택 Lookup 테이블 (받침 있을 때)
+    // 원본: { 0, 5, 5, 5, 5, 5, 5, 5, 5, 6, 7, 7, 7, 6, 6, 7, 7, 7, 6, 6, 7, 5 } (인덱스 1~21 사용)
     static const uint8_t CHO_BUL_WITH_JONG[] = {
-        0, 5, 5, 5, 5, 5, 5, 5,  // ㅏㅐㅑㅒㅓㅔㅕㅖ
-        5, 6, 7, 7, 7,           // ㅗㅘㅙㅚㅛ
-        6, 6, 7, 7, 7,           // ㅜㅝㅞㅟㅠ
-        6, 6, 7                  // ㅡㅢㅣ
+        5, 5, 5, 5, 5, 5, 5, 5,  // ㅏㅐㅑㅒㅓㅔㅕㅖ (인덱스 0~7)
+        6, 7, 7, 7, 6,           // ㅗㅘㅙㅚㅛ (인덱스 8~12)
+        6, 7, 7, 7, 6,           // ㅜㅝㅞㅟㅠ (인덱스 13~17)
+        6, 7, 5                  // ㅡㅢㅣ (인덱스 18~20)
     };
     
     // 종성 벌 선택 Lookup 테이블 (중성에 따라)
+    // 원본: { 0, 0, 2, 0, 2, 1, 2, 1, 2, 3, 0, 2, 1, 3, 3, 1, 2, 1, 3, 3, 1, 1 } (인덱스 1~21 사용)
     static const uint8_t JONG_BUL[] = {
-        0, 0, 2, 0, 2, 1, 2, 1,  // ㅏㅐㅑㅒㅓㅔㅕㅖ
-        2, 3, 0, 2, 1,           // ㅗㅘㅙㅚㅛ
-        3, 3, 1, 2, 1,           // ㅜㅝㅞㅟㅠ
-        3, 3, 1, 1               // ㅡㅢㅣ (마지막 1은 패딩)
+        0, 2, 0, 2, 1, 2, 1, 2,  // ㅏㅐㅑㅒㅓㅔㅕㅖ (인덱스 0~7)
+        3, 0, 2, 1, 3,           // ㅗㅘㅙㅚㅛ (인덱스 8~12)
+        3, 1, 2, 1, 3,           // ㅜㅝㅞㅟㅠ (인덱스 13~17)
+        3, 1, 1                  // ㅡㅢㅣ (인덱스 18~20)
     };
 
     // 초성 벌 선택 로직
@@ -228,19 +231,6 @@ namespace HangulCore {
             }
         }
         return nullptr;
-    }
-    
-    // 디버그용: 분해 결과 출력
-    inline void printComponents(const HangulComponents& comp) {
-        // Arduino에서는 Serial.print 사용
-        #ifdef ARDUINO
-        Serial.print("Cho: "); Serial.print(comp.cho);
-        Serial.print(" Jung: "); Serial.print(comp.jung);
-        Serial.print(" Jong: "); Serial.print(comp.jong);
-        Serial.print(" ChoBul: "); Serial.print(comp.choBul);
-        Serial.print(" JungBul: "); Serial.print(comp.jungBul);
-        Serial.print(" JongBul: "); Serial.println(comp.jongBul);
-        #endif
     }
 
 } // namespace HangulCore
