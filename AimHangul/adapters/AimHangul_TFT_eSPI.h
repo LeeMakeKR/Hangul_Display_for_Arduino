@@ -1,13 +1,12 @@
 /*
- * AimHangul_TFT.h
+ * AimHangul_TFT_eSPI.h
  * 
- * TFT LCD 디스플레이용 한글 출력 라이브러리
- * 지원 디스플레이: M5Stack, M5StickC, TFT_eSPI, U8g2
+ * TFT_eSPI 라이브러리용 한글 디스플레이 어댑터
+ * TFT LCD 디스플레이 지원 (M5Stack, M5StickC 등)
  * 
  * 사용 방법:
  * - M5Stack/M5StickC: M5.Lcd 객체 사용
  * - TFT_eSPI: tft 객체 사용
- * - U8g2: u8g2 객체 사용
  */
 
 #ifndef AIM_HANGUL_TFT_H

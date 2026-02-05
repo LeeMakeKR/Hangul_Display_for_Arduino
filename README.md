@@ -1,22 +1,61 @@
-# EPD_Hangul
+# AimHangul
 
 다양한 아두이노 디스플레이 라이브러리에서 한글을 표시하기 위한 모듈화된 폰트 라이브러리
 
 ## 프로젝트 목적
 
-GxEPD2, U8g2, TFT_eSPI, Adafruit GFX 등 아두이노의 다양한 디스플레이 라이브러리에서 EasyView 한글 폰트를 사용할 수 있도록 하는 통합 라이브러리입니다.
+U8g2, TFT_eSPI, GxEPD2, Adafruit GFX 등 아두이노의 다양한 디스플레이 라이브러리(TFT-LCD, OLED, E-Paper 등)에서 EasyView 한글 폰트를 사용할 수 있도록 하는 통합 라이브러리입니다.
 
 ## 주요 기능
 
 - **모듈화된 설계**: 폰트 데이터, 한글 처리 로직, 디스플레이 어댑터 분리
-- **다양한 디스플레이 지원**: GxEPD2, U8g2, TFT_eSPI, M5Stack 등
+- **다양한 디스플레이 지원**: TFT-LCD, OLED, E-Paper 등 (U8g2, TFT_eSPI, GxEPD2, M5Stack 등)
 - **EasyView 폰트**: 옛한글 텍스트 뷰어의 고품질 한글 폰트 활용
 - **템플릿 기반**: 폰트 변경 시 컴파일 타임에 최적화
 - **메모리 효율**: PROGMEM 사용으로 플래시 메모리 활용
 
 ## 사용 방법
 
-### 기본 사용법 (GxEPD2)
+### U8g2 사용법 (OLED)
+
+```cpp
+#include <U8g2lib.h>
+#include "AimHangul/adapters/AimHangul_U8g2.h"
+#include "AimHangul/fonts/hangul/Apple00_Font.h"
+
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+AimHangul_U8g2<Font_Apple00> hangul(&u8g2);
+
+void setup() {
+    u8g2.begin();
+    u8g2.clearBuffer();
+    hangul.setCursor(0, 15);
+    hangul.print("한글 테스트");
+    u8g2.sendBuffer();
+}
+```
+
+### TFT_eSPI 사용법 (TFT-LCD)
+
+```cpp
+#include <TFT_eSPI.h>
+#include "AimHangul/adapters/AimHangul_TFT_eSPI.h"
+#include "AimHangul/fonts/hangul/H01_Font.h"
+
+TFT_eSPI tft = TFT_eSPI();
+AimHangul_TFT_eSPI<Font_H01> hangul(&tft);
+
+void setup() {
+    tft.init();
+    tft.fillScreen(TFT_BLACK);
+    hangul.setCursor(10, 50);
+    hangul.setTextColor(HG_COLOR_WHITE);
+    hangul.print("한글 디스플레이");
+}
+```
+
+### GxEPD2 사용법 (E-Paper)
 
 ```cpp
 #include <GxEPD2_BW.h>
@@ -40,45 +79,6 @@ void setup() {
         hangul.setCursor(10, 30);
         hangul.print("안녕하세요 아두이노!");
     } while (display.nextPage());
-}
-```
-
-### U8g2 사용법
-
-```cpp
-#include <U8g2lib.h>
-#include "AimHangul/adapters/AimHangul_U8g2.h"
-#include "AimHangul/fonts/hangul/Apple00_Font.h"
-
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-
-AimHangul_U8g2<Font_Apple00> hangul(&u8g2);
-
-void setup() {
-    u8g2.begin();
-    u8g2.clearBuffer();
-    hangul.setCursor(0, 15);
-    hangul.print("한글 테스트");
-    u8g2.sendBuffer();
-}
-```
-
-### TFT_eSPI 사용법
-
-```cpp
-#include <TFT_eSPI.h>
-#include "AimHangul/adapters/AimHangul_TFT_eSPI.h"
-#include "AimHangul/fonts/hangul/H01_Font.h"
-
-TFT_eSPI tft = TFT_eSPI();
-AimHangul_TFT_eSPI<Font_H01> hangul(&tft);
-
-void setup() {
-    tft.init();
-    tft.fillScreen(TFT_BLACK);
-    hangul.setCursor(10, 50);
-    hangul.setTextColor(HG_COLOR_WHITE);
-    hangul.print("한글 디스플레이");
 }
 ```
 
@@ -163,7 +163,7 @@ python tools/render_hangul.py
 ## 크레딧
 
 - EasyView 옛한글 텍스트 뷰어의 한글 폰트 활용
-- GxEPD2, U8g2, TFT_eSPI 등 오픈소스 디스플레이 라이브러리들
+- U8g2, TFT_eSPI, GxEPD2 등 오픈소스 디스플레이 라이브러리들
 
 ## 라이브러리 구조
 
@@ -183,16 +183,16 @@ AimHangul/
 │
 ├── adapters/                      # 디스플레이 라이브러리 어댑터
 │   ├── AimHangul_Base.h          # 공통 베이스 클래스
-│   ├── AimHangul_GxEPD2.h        # GxEPD2 어댑터
-│   ├── AimHangul_TFT_eSPI.h      # TFT_eSPI 어댑터
-│   ├── AimHangul_U8g2.h          # U8g2 어댑터
+│   ├── AimHangul_U8g2.h          # U8g2 어댑터 (OLED)
+│   ├── AimHangul_TFT_eSPI.h      # TFT_eSPI 어댑터 (TFT-LCD)
+│   ├── AimHangul_GxEPD2.h        # GxEPD2 어댑터 (E-Paper)
 │   ├── AimHangul_Adafruit_GFX.h  # Adafruit GFX 어댑터
 │   └── AimHangul_M5Stack.h       # M5Stack 어댑터
 │
 └── examples/                      # 사용 예제
-    ├── GxEPD2_Example/
     ├── U8g2_Example/
-    └── TFT_eSPI_Example/
+    ├── TFT_eSPI_Example/
+    └── GxEPD2_Example/
 
 EasyView-font/                     # 원본 폰트 파일
 ├── ko/                           # 한글 폰트 (.han 파일)
@@ -220,19 +220,6 @@ AimHangul_U8g2<Font_Apple00> hangul(&u8g2);   // Apple00 폰트 사용
 - 사용하는 폰트만 링크 (링크 타임 최적화)
 - PROGMEM으로 플래시 메모리 활용
 - 필요한 글리프만 조합하여 렌더링
-├── KSFont.h          # 한글 폰트 데이터
-├── ASCFont.h         # ASCII 폰트 데이터
-└── fonts/            # 변환된 폰트 헤더 파일들
-
-tools/
-├── han_font_converter.py   # 한글 폰트 변환 도구 (.han → .h)
-├── requirements.txt        # Python 의존성
-└── README.md              # 도구 사용 설명서
-```
-
-## 한글 폰트 변환 도구
-
-EasyView의 `.han` 폰트 파일을 Arduino용 `.h` 파일로 변환하는 도구
 
 
 
@@ -241,5 +228,5 @@ EasyView의 `.han` 폰트 파일을 Arduino용 `.h` 파일로 변환하는 도�
 
 - [GxEPD2 한글 표시 방법](https://blog.naver.com/sanguru/221854830624)
 - [전자책 프로젝트 - 한글 폰트](https://blog.naver.com/gilchida/222927710968)
-- [옛한글 텍스트 뷰어 EasyView](한글%20디스플레이%20관련자료/EasyView-3.0.b2/)
+- [옛한글 텍스트 뷰어 EasyView](EasyView-3.0.b2)
 

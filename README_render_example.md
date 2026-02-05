@@ -143,4 +143,4 @@ pip install pillow numpy
 
 ## 라이선스
 
-이 예제 코드는 EPD_Hangul 프로젝트의 일부입니다.
+이 예제 코드는 AimHangul 프로젝트의 일부입니다.

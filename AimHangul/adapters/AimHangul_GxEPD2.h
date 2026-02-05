@@ -1,20 +1,15 @@
 /*
- * AimHangul_EPD.h
+ * AimHangul_GxEPD2.h
  * 
- * 전자잉크(E-Paper) 디스플레이용 한글 출력 라이브러리
- * 지원 디스플레이: GxEPD2 라이브러리 기반 전자잉크 디스플레이
- *                  M5Stack, M5StickC, TFT_eSPI(Sprite), U8g2
+ * GxEPD2 라이브러리용 한글 디스플레이 어댑터
+ * E-Paper(전자잉크) 디스플레이 지원
  * 
  * 주요 기능:
- * - GxEPD2 라이브러리를 통한 전자잉크 디스플레이 한글 출력
- * - TFT_eSPI Sprite 기능 지원으로 빠른 렌더링
+ * - GxEPD2 라이브러리를 통한 한글 출력
  * - 옛한글 텍스트 뷰어(EasyView) 폰트 사용
  * 
  * 사용 방법:
  * - GxEPD2: display 객체 사용
- * - TFT_eSPI: spr(sprite) 객체 사용
- * - M5Stack/M5StickC: M5.Lcd 객체 사용
- * - U8g2: u8g2 객체 사용
  */
 
 #ifndef AIM_HANGUL_EPD_H

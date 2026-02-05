@@ -2,6 +2,7 @@
  * AimHangul_U8g2.h
  * 
  * U8g2 라이브러리용 한글 디스플레이 어댑터
+ * OLED 및 LCD 디스플레이 지원 (SSD1306, SH1106 등)
  */
 
 #ifndef AIM_HANGUL_U8G2_H

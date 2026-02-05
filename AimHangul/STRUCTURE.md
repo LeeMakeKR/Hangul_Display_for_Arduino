@@ -22,16 +22,16 @@ AimHangul/
 │
 ├── adapters/                     # 디스플레이 어댑터
 │   ├── AimHangul_Base.h         # 공통 베이스 클래스
-│   ├── AimHangul_GxEPD2.h       # GxEPD2 어댑터
-│   ├── AimHangul_U8g2.h         # U8g2 어댑터
-│   ├── AimHangul_TFT_eSPI.h     # TFT_eSPI 어댑터
+│   ├── AimHangul_U8g2.h         # U8g2 어댑터 (OLED)
+│   ├── AimHangul_TFT_eSPI.h     # TFT_eSPI 어댑터 (TFT-LCD)
+│   ├── AimHangul_GxEPD2.h       # GxEPD2 어댑터 (E-Paper)
 │   ├── AimHangul_Adafruit_GFX.h # Adafruit GFX 어댑터
 │   └── AimHangul_M5Stack.h      # M5Stack 어댑터
 │
 └── examples/                     # 사용 예제
-    ├── GxEPD2_Example/
     ├── U8g2_Example/
-    └── TFT_eSPI_Example/
+    ├── TFT_eSPI_Example/
+    └── GxEPD2_Example/
 ```
 
 ## 구성 요소별 역할
@@ -70,6 +70,7 @@ AimHangul/
 - 각 디스플레이 라이브러리에 특화된 구현
 - 템플릿 기반으로 폰트 선택 가능
 - 해당 라이브러리의 API 사용
+- 지원 디스플레이: OLED (U8g2), TFT-LCD (TFT_eSPI), E-Paper (GxEPD2) 등
 
 ## 개발 가이드
 
@@ -92,10 +93,10 @@ AimHangul/
 ```cpp
 // 1. 필요한 헤더 포함
 #include "AimHangul/fonts/hangul/H01_Font.h"
-#include "AimHangul/adapters/AimHangul_GxEPD2.h"
+#include "AimHangul/adapters/AimHangul_U8g2.h"  // 또는 TFT_eSPI, GxEPD2 등
 
 // 2. 어댑터 객체 생성 (템플릿으로 폰트 선택)
-AimHangul_GxEPD2<Font_H01> hangul(&display);
+AimHangul_U8g2<Font_H01> hangul(&u8g2);
 
 // 3. 한글 출력
 hangul.setCursor(10, 30);
