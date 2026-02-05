@@ -16,7 +16,7 @@
 #define H01_FONT_H
 
 #include <Arduino.h>
-#include "../core/HangulTypes.h"
+#include "../../hangulDisp.h"
 
 namespace Font_H01 {
 
