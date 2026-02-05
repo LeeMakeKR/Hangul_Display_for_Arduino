@@ -17,7 +17,7 @@ python han_to_h.py <input.han> [output.h]
 python han_to_h.py ../EasyView-font/ko/Apple_kr.han
 
 # 출력 파일명 지정
-python han_to_h.py ../EasyView-font/ko/Apple_kr.han ../fonts/hangul/Apple_kr.h
+python han_to_h.py ../EasyView-font/ko/Apple_kr.han ../hangulDisp/fonts/hangul/Apple_kr.h
 ```
 
 ## 출력 헤더 파일 구조
