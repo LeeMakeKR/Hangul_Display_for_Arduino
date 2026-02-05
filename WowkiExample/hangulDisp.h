@@ -353,21 +353,23 @@ public:
 private:
     HangulGlyphSet getGlyphSet(const HangulComponents& comp) {
         HangulGlyphSet glyphs;
-        glyphs.cho = getGlyphPointer(choData, comp.cho, comp.choBul, HANGUL_CHO_BUL);
-        glyphs.jung = getGlyphPointer(jungData, comp.jung, comp.jungBul, HANGUL_JUNG_BUL);
+        // 초성과 중성은 1부터 시작, 종성은 0부터 시작
+        glyphs.cho = getGlyphPointer(choData, comp.cho + 1, comp.choBul, HANGUL_CHO_COUNT);
+        glyphs.jung = getGlyphPointer(jungData, comp.jung + 1, comp.jungBul, HANGUL_JUNG_COUNT);
         if (comp.jong > 0) {
-            glyphs.jong = getGlyphPointer(jongData, comp.jong, comp.jongBul, HANGUL_JONG_BUL);
+            glyphs.jong = getGlyphPointer(jongData, comp.jong, comp.jongBul, HANGUL_JONG_COUNT);
         } else {
             glyphs.jong = nullptr;
         }
         return glyphs;
     }
 
-    const uint8_t* getGlyphPointer(const uint8_t* base, uint8_t index, uint8_t bul, uint8_t bulCount) const {
+    const uint8_t* getGlyphPointer(const uint8_t* base, uint8_t index, uint8_t bul, uint8_t indexCount) const {
         if (!base) {
             return nullptr;
         }
-        uint16_t glyphIndex = static_cast<uint16_t>(index) * bulCount + bul;
+        // 폰트 데이터는 벌 우선 정렬: (벌 * 자음/모음개수) + 인덱스
+        uint16_t glyphIndex = static_cast<uint16_t>(bul) * indexCount + index;
         uint32_t offset = static_cast<uint32_t>(glyphIndex) * HANGUL_BYTES_PER_GLYPH;
         return base + offset;
     }
