@@ -133,9 +133,9 @@ UTF-8 문자열 (3바이트)
 
 ## 도구
 
-### 폰트 변환 도구
+### 1. EasyView 폰트 변환 도구
 
-`tools/easyview-font-converter/` 폴더에 EasyView 폰트를 Arduino 헤더로 변환하는 도구가 있습니다:
+`tools/easyview-font-converter/` - EasyView 폰트를 Arduino 헤더로 변환
 
 - **han_to_h.py**: 단일 `.han` 파일을 `.h` 헤더로 변환
 - **convert_all.py**: 전체 폰트 일괄 변환
@@ -149,6 +149,28 @@ python tools/easyview-font-converter/han_to_h.py input.han output.h
 cd tools/easyview-font-converter
 python convert_all.py
 ```
+
+### 2. TTF 폰트 변환 도구
+
+`tools/ttf-converter/` - TrueType 폰트를 Arduino 헤더로 변환
+
+원하는 TTF/OTF 폰트를 Arduino 호환 헤더 파일로 변환합니다.
+
+**주요 기능:**
+- 다양한 폰트 크기 지원 (8px ~ 32px)
+- 문자 세트 선택 (ASCII, 한글, 커스텀)
+- 가변 폭 폰트 지원
+- 메모리 최적화
+
+```bash
+# ASCII 폰트 변환
+python tools/ttf-converter/ttf_to_h.py MyFont.ttf MyFont_16.h --size 16
+
+# 한글 폰트 변환 (주의: 메모리 많이 사용)
+python tools/ttf-converter/ttf_to_h.py NanumGothic.ttf Nanum_kr.h --size 16 --charset hangul
+```
+
+자세한 사용법은 [TTF 변환 도구 README](tools/ttf-converter/README.md)를 참조하세요.
 
 ## 참고 자료
 
