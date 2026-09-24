@@ -39,7 +39,7 @@
 - HangulDisp 인스턴스에 폰트를 지정합니다.
 
 ```cpp
-#include "hangulDisp.h"
+#include "HangulDisp.h"
 #include "MyFont.h"
 
 void setup() {
@@ -63,7 +63,7 @@ void setup() {
 - 기존 EasyView 전용 출력 구조와 신규 포맷을 공존시키는 방안을 문서화합니다.
 - 출력 포맷 선택 옵션을 추가할지 여부를 결정합니다.
 
-3) hangulDisp.h 확장 방향
+3) HangulDisp.h 확장 방향
 - 새로운 폰트 구조체(예: DKB844/ASCII 포함)를 수용할 수 있도록 타입/로딩 로직 확장을 설계합니다.
 - 기존 HangulFontInfo 포맷과 호환성을 유지할지 결정합니다.
 

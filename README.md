@@ -17,13 +17,19 @@ U8g2, TFT_eSPI, GxEPD2, Adafruit GFX 등 아두이노의 다양한 디스플레�
 
 ## 빠른 시작
 
+### 설치
+
+`HangulDisp/` 폴더를 통째로 아두이노 라이브러리 폴더에 복사합니다.
+(Windows: `문서\Arduino\libraries\HangulDisp\`)
+
 ### 기본 사용 예제
 
 ```cpp
-#include "hangulDisp.h"
-#include "H01_kr.h"  // 사용할 폰트 헤더
+#include <TFT_eSPI.h>
+#include <HangulDisp.h>
+#include <fonts/H01_kr.h>   // 사용할 폰트 헤더 (변수명 = 파일명)
 
-TFT_eSPI tft;  // 또는 U8G2, GxEPD2 등
+TFT_eSPI tft;  // 또는 U8glib, U8g2, GxEPD2 등
 
 // 픽셀 그리기 콜백 함수
 void drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -35,13 +41,40 @@ hangulDisp hangul(drawPixel);
 
 void setup() {
     tft.init();
-    hangul.setFont(H01_kr);  // 폰트 설정
+    tft.fillScreen(TFT_BLACK);
+
+    hangul.setFont(H01_kr);           // 폰트 설정
+    if (!hangul.isFontReady()) return;  // 16x16이 아니거나 포인터가 비면 거부된다
+
+    hangul.print(10, 30, "안녕하세요", (uint16_t)TFT_WHITE);
 }
 
-void loop() {
-    hangul.print(10, 30, "안녕하세요 한글출력입니다", TFT_WHITE);
-}
+void loop() {}
 ```
+
+### 이 라이브러리가 그리는 것과 그리지 않는 것
+
+| 입력 | 처리 |
+|------|------|
+| 현대 한글 U+AC00~U+D7A3 | 합성해서 그리고 커서를 전진 |
+| 공백 | 그리지 않고 커서만 `16 x 가로배율` 전진 |
+| 그 외 ASCII (영문·숫자·CR·LF) | 그리지 않고 커서도 움직이지 않음 |
+| 한자·자모·이모지 등 미지원 문자 | 그리지 않고 커서도 움직이지 않음 |
+| 잘못된 UTF-8 | 1바이트 버리고 다음부터 다시 읽음 |
+
+**영문·숫자·개행은 이 라이브러리가 처리하지 않습니다.** 쓰던 디스플레이
+라이브러리의 폰트로 그리면 됩니다. 자세한 내용은 [사용방법.md](사용방법.md) 참조.
+
+### 어댑터와 예제
+
+| 예제 | 내용 |
+|------|------|
+| [SelfTest](HangulDisp/examples/SelfTest/) | 디스플레이 없이 도는 자가진단 (시리얼 출력) |
+| [U8glib_Hangul](HangulDisp/examples/U8glib_Hangul/) | Uno + SSD1306 128x64 OLED |
+| [GxEPD2_Hangul](HangulDisp/examples/GxEPD2_Hangul/) | ESP32/Mega + 1.54" 200x200 전자종이 |
+
+`HangulDisp/adapters/` 의 어댑터는 클리핑과 색상 변환을 맡습니다. 드라이버 헤더를
+포함하지 않는 템플릿이라 코어의 필수 의존성이 되지 않습니다.
 
 ## 설계 원칙
 
@@ -51,9 +84,9 @@ void loop() {
 - 디스플레이 독립적 구현
 
 ### 2. **모듈 통합**
-- hangulDisp.h에 타입 정의와 로직 통합
+- HangulDisp.h에 타입 정의와 로직 통합
 - UTF-8 → 초중종성 분해, 벌 선택
-- 폰트 데이터는 별도 헤더로 분리 (Font_name.h 등)
+- 폰트 데이터는 별도 헤더로 분리 (`fonts/H01_kr.h` 등)
 
 
 ### 3. **메모리 효율**
@@ -111,13 +144,17 @@ UTF-8 문자열 (3바이트)
 - 자모 인덱스 규칙 및 벌 시스템
 - 메모리 최적화 및 변환 도구
 
-#### 2. [렌더링 규칙 명세](RENDERING_SPECIFICATION.md)
-한글 렌더링 파이프라인과 처리 규칙을 상세히 설명합니다.
-- UTF-8 처리 및 유니코드 변환
+#### 2. 렌더링 규칙
+렌더링 파이프라인과 문자 처리 계약은 코어 헤더
+[HangulDisp/HangulDisp.h](HangulDisp/HangulDisp.h) 상단 주석에 표로 정리되어 있습니다.
+- UTF-8 디코딩 (1~4바이트, 최단 인코딩, surrogate, 상한 검증)
 - 한글 분해 알고리즘 (초중종 분리)
 - 벌 선택 규칙 (조합 규칙)
-- 글리프 포인터 계산 및 비트맵 합성
-- 디스플레이 출력 및 성능 최적화
+- 글리프 포인터 계산 및 행 단위 비트맵 OR 합성
+- 색상·클리핑·페이지 루프의 역할 분담
+
+#### 3. [개발로그](개발로그.md)
+수정 이력, 측정 수치, 시험 구성, 미수행 항목을 기록합니다.
 
 ### 문서 업데이트 계획
 
@@ -125,7 +162,8 @@ UTF-8 문자열 (3바이트)
 
 - README.md: 지원 폰트/변환 도구/사용 흐름 업데이트
 - FONT_HEADER_SPECIFICATION.md: 신규 헤더 포맷 또는 변형 규격 추가
-- RENDERING_SPECIFICATION.md: 벌 규칙, 렌더링 경로, ASCII 처리 등 변화 사항 반영
+- HangulDisp/HangulDisp.h 상단 주석: 벌 규칙, 렌더링 경로, 문자 처리 계약 변화 반영
+- 개발로그.md: 변경 이유와 측정 수치 기록
 
 ### 빠른 참조
 
@@ -160,29 +198,27 @@ python convert_all.py
 
 ### 2. TTF 폰트 변환 도구
 
-`tools/ttf-converter/` - TrueType 폰트를 Arduino 헤더로 변환
+`tools/ttf-font-converter/` - TrueType 폰트를 조합형 한글 비트맵으로 변환
 
-원하는 TTF/OTF 폰트를 Arduino 호환 헤더 파일로 변환합니다.
+이 폴더에는 변환 스크립트가 아니라 **Einstein Bacon Machine** (외부 GUI 프로그램)
+사용 절차가 정리되어 있습니다. 자세한 내용은
+[TTF 변환 도구 README](tools/ttf-font-converter/README.md)를 참조하세요.
 
-**주요 기능:**
-- 다양한 폰트 크기 지원 (8px ~ 32px)
-- 문자 세트 선택 (ASCII, 한글, 커스텀)
-- 가변 폭 폰트 지원
-- 메모리 최적화
+### 3. 시험
 
 ```bash
-# ASCII 폰트 변환
-python tools/ttf-converter/ttf_to_h.py MyFont.ttf MyFont_16.h --size 16
+# 변환기·폰트 헤더·코어 시험 전체
+python -B tests/run_all_tests.py
 
-# 한글 폰트 변환 (주의: 메모리 많이 사용)
-python tools/ttf-converter/ttf_to_h.py NanumGothic.ttf Nanum_kr.h --size 16 --charset hangul
+# 예제·용량 빌드 (PlatformIO)
+pio run -d tests/pio -e selftest_uno
+pio run -d tests/pio -e u8glib_uno
+pio run -d tests/pio -e gxepd2_mega
 ```
-
-자세한 사용법은 [TTF 변환 도구 README](tools/ttf-converter/README.md)를 참조하세요.
 
 ## 참고 자료
 
 - [GxEPD2 한글 표시 방법](https://blog.naver.com/sanguru/221854830624)
 - [전자책 프로젝트 - 한글 폰트](https://blog.naver.com/gilchida/222927710968)
 - [마이크로파이썬 한글 사용하기](https://blog.naver.com/gilchida/224073231896)
-- [옛한글 텍스트 뷰어 EasyView](EasyView-3.0.b2)
+- 옛한글 텍스트 뷰어 EasyView (폰트 원본 출처)

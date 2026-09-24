@@ -2,7 +2,7 @@
  * Hanginsm_kr - Korean Hangul Font for Arduino/ESP32
  * 
  * Converted from EasyView font file: Hanginsm_kr.han
- * Generated: 2026-02-06 08:36:50
+ * Generated: 2026-09-24 13:37:05
  * 
  * Font Structure:
  * - Glyph Size: 16x16 pixels
@@ -14,12 +14,15 @@
  * - Cho (초성): 0~159 (20 chars x 8 bul)
  * - Jung (중성): 160~247 (22 chars x 4 bul)
  * - Jong (종성): 248~359 (28 chars x 4 bul)
+ * 
+ * 이 파일은 tools/easyview-font-converter/han_to_h.py가 생성한다.
+ * 직접 수정하지 말고 변환기를 고친 뒤 다시 생성할 것.
  */
 
 #ifndef HANGINSM_KR_H
 #define HANGINSM_KR_H
 
-#include "hangulDisp.h"
+#include "HangulDisp.h"
 
 // Font bitmap data (MSB first, 16x16 pixels, 32 bytes per glyph)
 const uint8_t Hanginsm_kr_Bitmaps[] PROGMEM = {
@@ -990,10 +993,9 @@ const HangulFontInfo Hanginsm_kr = {
   "Hanginsm",                                                               // name
   16,                                                                       // width
   16,                                                                       // height
-  false,                                                                    // hasAscii
   Hanginsm_kr_Bitmaps + (HANGUL_CHO_OFFSET * HANGUL_BYTES_PER_GLYPH),       // choData
   Hanginsm_kr_Bitmaps + (HANGUL_JUNG_OFFSET * HANGUL_BYTES_PER_GLYPH),      // jungData
-  Hanginsm_kr_Bitmaps + (HANGUL_JONG_OFFSET * HANGUL_BYTES_PER_GLYPH)        // jongData
+  Hanginsm_kr_Bitmaps + (HANGUL_JONG_OFFSET * HANGUL_BYTES_PER_GLYPH)       // jongData
 };
 
 #endif // HANGINSM_KR_H

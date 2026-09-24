@@ -30,7 +30,7 @@
 #ifndef [FONT_NAME]_H
 #define [FONT_NAME]_H
 
-#include "hangulDisp.h"
+#include "HangulDisp.h"
 
 // Font bitmap data
 const uint8_t [FontName]_Bitmaps[] PROGMEM = {
@@ -127,6 +127,12 @@ struct HangulFontInfo {
     const uint8_t* jongData; // 종성 데이터 포인터
 };
 ```
+
+`width`와 `height`는 장식이 아니다. `setFont()` 이 두 값이 16x16인지 확인하고,
+다르거나 세 포인터 중 하나라도 비어 있으면 폰트를 거부한다(`isFontReady() == false`).
+
+원본 `.han` 입력은 정확히 11,520바이트여야 한다. 변환기는 크기가 다른 입력을
+패딩하거나 자르지 않고 변환 자체를 실패시킨다.
 
 #### 포인터 오프셋 계산
 ```cpp
@@ -245,7 +251,7 @@ const uint8_t FontName_Bitmaps[] PROGMEM = { ... };
 
 ### 7.1 폰트 헤더 포함
 ```cpp
-#include "hangulDisp.h"
+#include "HangulDisp.h"
 #include "fonts/H01_kr.h"
 ```
 
