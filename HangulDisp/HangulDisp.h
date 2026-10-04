@@ -72,9 +72,10 @@
 #endif
 #endif
 
-// C++14 이상에서는 코어 함수를 컴파일 타임 상수 평가로 검증할 수 있게 한다.
-// C++11(아두이노 AVR 기본)에서는 그냥 inline 함수다. 런타임 동작은 같다.
-#if defined(__cpp_constexpr) && __cpp_constexpr >= 201304L
+// AVR 이외의 C++14 이상 환경에서는 코어 함수를 상수 평가로 검증할 수 있다.
+// AVR의 PROGMEM 읽기는 어셈블리를 사용하므로 constexpr로 선언할 수 없다.
+// AVR 및 C++11에서는 inline 함수로 선언한다. 런타임 동작은 같다.
+#if !defined(__AVR__) && defined(__cpp_constexpr) && __cpp_constexpr >= 201304L
 #define HANGUL_CONSTEXPR constexpr
 #else
 #define HANGUL_CONSTEXPR inline
